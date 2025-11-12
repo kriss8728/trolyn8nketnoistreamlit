@@ -18,18 +18,24 @@ WEBHOOK_URL = st.secrets.get("WEBHOOK_URL")
 def generate_session_id():
     return str(uuid.uuid4())
 
-def send_message_to_llm(session_id, message):
-    headers = {
-        "Authorization": f"Bearer {BEARER_TOKEN}",
-        "Content-Type": "application/json"
-    }
-    payload = {
-        "sessionId": session_id,
-        "chatInput": message
+
     }
     
     try:
+        # Debug: In ra thông tin request
+        st.write("🔍 Debug Info:")
+        st.write(f"- URL: {WEBHOOK_URL}")
+        st.write(f"- Token exists: {bool(BEARER_TOKEN)}")
+        st.write(f"- Session ID: {session_id[:8]}...")
+        st.write(f"- Message: {message[:50]}...")
+        
         response = requests.post(WEBHOOK_URL, json=payload, headers=headers, timeout=30)
+        
+        # Debug: In ra status code và response
+        st.write(f"- Status Code: {response.status_code}")
+        st.write(f"- Response Length: {len(response.text)} chars")
+        st.write(f"- Response Headers: {dict(response.headers)}")
+        st.write(f"- First 500 chars: {response.text[:500]}")
         
         # Kiểm tra status code trước
         if response.status_code != 200:
